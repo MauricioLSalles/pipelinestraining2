@@ -65,6 +65,9 @@ jobs:
 
       - name: run integration test
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
+
+      - name: cleanup
+        run: docker compose rm --force
 #
 #  ## 🚀 4. 
   deploy-prod:
@@ -84,3 +87,6 @@ jobs:
 
       - name: run integration test
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
+
+      - name: cleanup
+        run: docker compose rm --force
