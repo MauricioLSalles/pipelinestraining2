@@ -1,38 +1,56 @@
 name: CI
 
 on:
-  # push:
-  #   branches: [ "develop", "main" ]
-  # pull_request:
-  #   branches: [ "develop", "main" ]
+  push:
+    branches: [ "develop", "main","mauricioleaño_p2_dev","mauricioleaño_p2_base" ]
+  pull_request:
+    branches: [ "develop", "main" ,"mauricioleaño_p2_dev","mauricioleaño_p2_base" ]
 
   workflow_dispatch:
 
 env: 
   SEM_VERSION: ""
   IMAGE_NAME:  ""
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
   ## 🔧 1. 
   Static-codecheck:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: install dependencies
+        run: pip install -r requirements.txt
+
+      - name: test
+        run: python -m pytest test/unit -v
+
   ## 🔧 2. 
   Build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: Static-codecheck
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-  ## 🚀 3. 
+      - name: install dependencies
+        run: pip install -r requirements.txt
+
+      - name: build
+        run: docker build -t restapp:1.0.0 .
+
+      - name: tag
+        run: docker tag restapp:1.0.0 mauriciolsalles/restapp:1.0.0
+
+      - name: push
+        run: docker push mauriciolsalles/restapp:1.0.0 
+#  ## 🚀 3. 
   deploy-dev:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: Build
     environment:
       name: Develop
@@ -42,10 +60,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-  ## 🚀 4. 
+      - name: check if reddis exist
+        run: | 
+          docker stop redisService  
+          docker rm  redisService
+
+      #- name: create net
+      #  run: docker network create  redis
+
+      - name: setup redis
+        run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
+
+      - name: check if restapp exist
+        run: |
+          docker stop restapp
+          docker rm  restapp
+
+      - name: run restapp image
+        run: docker run --name restapp --network redis -p 5000:5000 -d restapp:1.0.0          
+
+      - name: run integration test
+        run: docker exec restapp sh -c "python -m pytest test/integration -v"
+#
+#  ## 🚀 4. 
   deploy-prod:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: deploy-dev
+    if: github.ref == 'refs/heads/mauricioleaño_p2_base'
     environment:
       name: Production
       url: http://localhost:5000
@@ -53,3 +94,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: check if reddis exist
+        run: | 
+          docker stop redisService  
+          docker rm  redisService
+
+      #- name: create net
+      #  run: docker network create  redis
+
+      - name: setup redis
+        run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
+
+      - name: check if restapp exist
+        run: |
+          docker stop restapp
+          docker rm  restapp
+
+      - name: run restapp image
+        run: docker run --name restapp --network redis -p 5000:5000 -d restapp:1.0.0          
+
+      - name: run integration test
+        run: docker exec restapp sh -c "python -m pytest test/integration -v"
