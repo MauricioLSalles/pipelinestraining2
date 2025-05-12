@@ -11,6 +11,7 @@ on:
 env: 
   SEM_VERSION: ""
   IMAGE_NAME:  ""
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
   ## 🔧 1. 
@@ -41,6 +42,12 @@ jobs:
 
       - name: build
         run: docker build -t restapp:1.0.0 .
+
+      - name: tag
+        run: docker tag my_app ${BRANCH_NAME}/restapp:1.0.0
+
+      - name: push
+        run: docker push ${BRANCH_NAME}/restapp:1.0.0
 #  ## 🚀 3. 
 #  deploy-dev:
 #    runs-on: ubuntu-latest
