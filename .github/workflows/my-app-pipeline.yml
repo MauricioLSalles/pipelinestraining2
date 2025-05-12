@@ -73,7 +73,7 @@ jobs:
   deploy-prod:
     runs-on: self-hosted
     needs: deploy-dev
-    if: github.ref == 'refs/heads/mauricioleaño_p2_base'
+    if: github.ref == 'refs/heads/mauricioleaño_p2_base' 
     environment:
       name: Production
       url: http://localhost:5000 
