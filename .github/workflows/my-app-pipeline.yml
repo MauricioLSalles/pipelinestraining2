@@ -60,10 +60,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      #- name: check if reddis exist
-      #  run: | 
-      #    docker stop redisService  
-      #    docker rm  redisService
+      - name: check if reddis exist
+        run: | 
+          docker stop redisService  
+          docker rm  redisService
 
       #- name: create net
       #  run: docker network create  redis
@@ -71,14 +71,14 @@ jobs:
       - name: setup redis
         run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
 
-      #- name: check if restapp exist
-      #  run: docker stop "restapp" | docker rm  "restapp"
+      - name: check if restapp exist
+        run: docker stop "restapp" | docker rm  "restapp"
 
       - name: run restapp image
         run: docker run --name restapp --network redis -p 5000:5000 -d restapp:1.0.0          
 
       - name: run integration test
-        run: docker exec -it restapp sh -c "python -m pytest test/integration -v"
+        run: docker exec restapp sh -c "python -m pytest test/integration -v"
 #
 #  ## 🚀 4. 
 #  deploy-prod:
