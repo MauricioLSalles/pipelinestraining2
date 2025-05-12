@@ -65,8 +65,8 @@ jobs:
       #    docker stop redisService  
       #    docker rm  redisService
 
-      - name: create net
-        run: docker network create  redis
+      #- name: create net
+      #  run: docker network create  redis
 
       - name: setup redis
         run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
