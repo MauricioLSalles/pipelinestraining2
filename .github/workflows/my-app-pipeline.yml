@@ -82,7 +82,7 @@ jobs:
       - name: check if reddis exist
         run: | 
           docker stop redisService  
-          docker rm  redisService
+          docker rm  redisService 
 
       #- name: create net
       #  run: docker network create  redis
