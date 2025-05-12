@@ -67,7 +67,9 @@ jobs:
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
 
       - name: cleanup
-        run: docker compose rm --force
+        run: |
+          docker stop redisService
+          docker rm redisService
 #
 #  ## 🚀 4. 
   deploy-prod:
@@ -89,4 +91,6 @@ jobs:
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
 
       - name: cleanup
-        run: docker compose rm --force
+        run: |
+          docker stop redisService
+          docker rm redisService
