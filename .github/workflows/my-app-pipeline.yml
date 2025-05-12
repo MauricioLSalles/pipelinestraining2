@@ -69,7 +69,7 @@ jobs:
         run: docker network create  redis
 
       - name: setup redis
-        run: docker run --name redisService -p "6379:6379" -d redis:alpine --network redis
+        run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
 
       #- name: check if restapp exist
       #  run: docker stop "restapp" | docker rm  "restapp"
