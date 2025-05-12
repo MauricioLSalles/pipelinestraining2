@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env: 
-  SEM_VERSION: "${{github.run_id}}"
+  SEM_VERSION: ${{github.run_id}}
   IMAGE_NAME:  "restapp"
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: build compose
-        run: docker compose -f 'compose.yaml' up -d --build $IMAGE_NAME
+        run: docker compose -f 'compose.yaml' up -d --build $IMAGE_NAME --force-recreate
 
       - name: run integration test
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
@@ -79,24 +79,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: check if reddis exist
-        run: | 
-          docker stop redisService  
-          docker rm  redisService 
-
-      #- name: create net
-      #  run: docker network create  redis
-
-      - name: setup redis
-        run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
-
-      - name: check if $IMAGE_NAME exist
-        run: |
-          docker stop $IMAGE_NAME
-          docker rm  $IMAGE_NAME
-
-      - name: run $IMAGE_NAME image
-        run: docker run --name $IMAGE_NAME --network redis -p 5000:5000 -d $IMAGE_NAME:1.0.$SEM_VERSION          
+      - name: build compose
+        run: docker compose -f 'compose.yaml' up -d --build $IMAGE_NAME --force-recreate
 
       - name: run integration test
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
