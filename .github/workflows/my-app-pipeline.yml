@@ -66,17 +66,16 @@ jobs:
       - name: setup redis
         run: docker run --name redisService -p "6379:6379" -d redis:alpine
 
-      - name: redis ip
-        run: $redisIP = (docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redisService)[1]
-
       #- name: check if restapp exist
       #  run: docker stop "restapp" | docker rm  "restapp"
 
       - name: run restapp image
-        run: docker run --name "restapp" --add-host "redis:$redisIP" -p "5000:5000" -d restapp:1.0.0
+        run: |
+          $redisIP = (docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redisService)[1]
+          docker run --name "restapp" --add-host "redis:$redisIP" -p "5000:5000" -d restapp:1.0.0
 
       - name: run integration test
-        run: python -m pytest test/integration -v
+        run: docker exec -it restapp sh -c "python -m pytest test/integration -v"
 #
 #  ## 🚀 4. 
 #  deploy-prod:
