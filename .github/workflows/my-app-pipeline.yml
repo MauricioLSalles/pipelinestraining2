@@ -41,13 +41,13 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: build
-        run: docker build -t ${IMAGE_NAME}:1.0.0 .
+        run: docker build -t $IMAGE_NAME:1.0.0 .
 
       - name: tag
-        run: docker tag ${IMAGE_NAME}:1.0.0 mauriciolsalles/${IMAGE_NAME}:1.0.0
+        run: docker tag $IMAGE_NAME:1.0.0 mauriciolsalles/$IMAGE_NAME:1.0.0
 
       - name: push
-        run: docker push mauriciolsalles/${IMAGE_NAME}:1.0.0 
+        run: docker push mauriciolsalles/$IMAGE_NAME:1.0.0 
 #  ## 🚀 3. 
   deploy-dev:
     runs-on: self-hosted
@@ -61,10 +61,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: build compose
-        run: docker compose -f 'compose.yaml' up -d --build '${IMAGE_NAME}' 
+        run: docker compose -f 'compose.yaml' up -d --build $IMAGE_NAME
 
       - name: run integration test
-        run: docker exec ${IMAGE_NAME} sh -c "python -m pytest test/integration -v"
+        run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
 #
 #  ## 🚀 4. 
   deploy-prod:
@@ -90,13 +90,13 @@ jobs:
       - name: setup redis
         run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
 
-      - name: check if ${IMAGE_NAME} exist
+      - name: check if $IMAGE_NAME exist
         run: |
-          docker stop ${IMAGE_NAME}
-          docker rm  ${IMAGE_NAME}
+          docker stop $IMAGE_NAME
+          docker rm  $IMAGE_NAME
 
-      - name: run ${IMAGE_NAME} image
-        run: docker run --name ${IMAGE_NAME} --network redis -p 5000:5000 -d ${IMAGE_NAME}:1.0.0          
+      - name: run $IMAGE_NAME image
+        run: docker run --name $IMAGE_NAME --network redis -p 5000:5000 -d $IMAGE_NAME:1.0.0          
 
       - name: run integration test
-        run: docker exec ${IMAGE_NAME} sh -c "python -m pytest test/integration -v"
+        run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
