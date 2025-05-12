@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "develop", "main" ]
+    branches: [ "develop", "main","MauricioLeaño_p2_dev","MauricioLeaño_p2_base" ]
   pull_request:
-    branches: [ "develop", "main" ]
+    branches: [ "develop", "main" ,"MauricioLeaño_p2_dev","MauricioLeaño_p2_base" ]
 
   workflow_dispatch:
 
