@@ -73,7 +73,7 @@ jobs:
     if: github.ref == 'refs/heads/mauricioleaño_p2_base'
     environment:
       name: Production
-      url: http://localhost:5000
+      url: http://localhost:5000 
 
     steps:
       - name: Checkout code
