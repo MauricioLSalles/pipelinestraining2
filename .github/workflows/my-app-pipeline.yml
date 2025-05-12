@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env: 
-  SEM_VERSION: "${{ github.run_id }} "
+  SEM_VERSION: "${{github.run_id}}"
   IMAGE_NAME:  "restapp"
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
