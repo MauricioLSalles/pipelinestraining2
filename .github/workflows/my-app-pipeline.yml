@@ -49,34 +49,34 @@ jobs:
       - name: push
         run: docker push mauriciolsalles/restapp:1.0.0 
 #  ## 🚀 3. 
-#  deploy-dev:
-#    runs-on: ubuntu-latest
-#    needs: Build
-#    environment:
-#      name: Develop
-#      url: http://localhost:5000
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#
-#      - name: check if reddis exist
-#        run: docker stop "redisService" | docker rm  "redisService"
-#
-#      - name: setup redis
-#        run: docker run --name "redisService" -p "6379:6379" -d redis:alpine
-#
-#      - name: redis ip
-#        run: $redisIP = (docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redisService)[1]
-#
-#      - name: check if restapp exist
-#        run: docker stop "restapp" | docker rm  "restapp"
-#
-#      - name: run restapp image
-#        run: docker run --name "restapp" --add-host "redis:$redisIP" -p "5000:5000" -d restapp:1.0.0
-#
-#      - name: run integration test
-#        run: python -m pytest test/integration -v
+  deploy-dev:
+    runs-on: self-hosted
+    needs: Build
+    environment:
+      name: Develop
+      url: http://localhost:5000
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: check if reddis exist
+        run: docker stop "redisService" | docker rm  "redisService"
+
+      - name: setup redis
+        run: docker run --name "redisService" -p "6379:6379" -d redis:alpine
+
+      - name: redis ip
+        run: $redisIP = (docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redisService)[1]
+
+      - name: check if restapp exist
+        run: docker stop "restapp" | docker rm  "restapp"
+
+      - name: run restapp image
+        run: docker run --name "restapp" --add-host "redis:$redisIP" -p "5000:5000" -d restapp:1.0.0
+
+      - name: run integration test
+        run: python -m pytest test/integration -v
 #
 #  ## 🚀 4. 
 #  deploy-prod:
