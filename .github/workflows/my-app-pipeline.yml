@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
 
 env: 
-  SEM_VERSION: ""
-  IMAGE_NAME:  ""
+  SEM_VERSION: ${{github.run_id}}
+  IMAGE_NAME:  "restapp"
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
@@ -41,13 +41,13 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: build
-        run: docker build -t restapp:1.0.0 .
+        run: docker build -t $IMAGE_NAME:1.0.$SEM_VERSION .
 
       - name: tag
-        run: docker tag restapp:1.0.0 mauriciolsalles/restapp:1.0.0
+        run: docker tag $IMAGE_NAME:1.0.$SEM_VERSION mauriciolsalles/$IMAGE_NAME:1.0.$SEM_VERSION
 
       - name: push
-        run: docker push mauriciolsalles/restapp:1.0.0 
+        run: docker push mauriciolsalles/$IMAGE_NAME:1.0.$SEM_VERSION 
 #  ## 🚀 3. 
   deploy-dev:
     runs-on: self-hosted
@@ -60,59 +60,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: check if reddis exist
-        run: | 
-          docker stop redisService  
-          docker rm  redisService
-
-      #- name: create net
-      #  run: docker network create  redis
-
-      - name: setup redis
-        run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
-
-      - name: check if restapp exist
-        run: |
-          docker stop restapp
-          docker rm  restapp
-
-      - name: run restapp image
-        run: docker run --name restapp --network redis -p 5000:5000 -d restapp:1.0.0          
+      - name: build compose
+        run: docker compose -f 'compose.yaml' up -d $IMAGE_NAME --force-recreate
 
       - name: run integration test
-        run: docker exec restapp sh -c "python -m pytest test/integration -v"
+        run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
+
+      - name: cleanup
+        run: docker compose down
 #
 #  ## 🚀 4. 
   deploy-prod:
     runs-on: self-hosted
     needs: deploy-dev
-    if: github.ref == 'refs/heads/mauricioleaño_p2_base'
+    if: github.ref == 'refs/heads/mauricioleaño_p2_base' 
     environment:
       name: Production
-      url: http://localhost:5000
+      url: http://localhost:5000 
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 
 
-      - name: check if reddis exist
-        run: | 
-          docker stop redisService  
-          docker rm  redisService
-
-      #- name: create net
-      #  run: docker network create  redis
-
-      - name: setup redis
-        run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
-
-      - name: check if restapp exist
-        run: |
-          docker stop restapp
-          docker rm  restapp
-
-      - name: run restapp image
-        run: docker run --name restapp --network redis -p 5000:5000 -d restapp:1.0.0          
+      - name: build compose
+        run: docker compose -f 'compose.yaml' up -d  $IMAGE_NAME --force-recreate
 
       - name: run integration test
-        run: docker exec restapp sh -c "python -m pytest test/integration -v"
+        run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
+
+      - name: cleanup
+        run: docker compose down

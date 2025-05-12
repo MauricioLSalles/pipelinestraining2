@@ -1,0 +1,21 @@
+services:
+  restapp:
+    depends_on:
+      - redisService
+    image: mauriciolsalles/restapp:1.0.${SEM_VERSION}
+    container_name: restapp
+    restart: always
+    ports:
+      - 5000:5000
+    networks:
+     - network
+
+  redisService:
+    image: redis:alpine 
+    ports:
+      - 6379:6379
+    networks:
+     - network
+
+networks:
+  network:
