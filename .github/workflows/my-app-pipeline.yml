@@ -72,7 +72,9 @@ jobs:
         run: docker run --name redisService --network redis -p 6379:6379 -d redis:alpine 
 
       - name: check if restapp exist
-        run: docker stop "restapp" | docker rm  "restapp"
+        run: |
+          docker stop restapp
+          docker rm  restapp
 
       - name: run restapp image
         run: docker run --name restapp --network redis -p 5000:5000 -d restapp:1.0.0          
