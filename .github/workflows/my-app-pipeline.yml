@@ -67,7 +67,7 @@ jobs:
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
 
       - name: cleanup
-        run: docker-compose down
+        run: docker compose down
 #
 #  ## 🚀 4. 
   deploy-prod:
@@ -89,4 +89,4 @@ jobs:
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
 
       - name: cleanup
-        run: docker-compose down
+        run: docker compose down
