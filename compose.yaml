@@ -2,7 +2,7 @@ services:
   restapp:
     depends_on:
       - redisService
-    image: mauriciolsalles/restapp:latest
+    image: mauriciolsalles/restapp:1.0.${VARIABLE_NAME}
     container_name: restapp
     restart: always
     ports:
