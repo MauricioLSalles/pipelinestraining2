@@ -16,7 +16,7 @@ env:
 jobs:
   ## 🔧 1. 
   Static-codecheck:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -30,7 +30,7 @@ jobs:
 
   ## 🔧 2. 
   Build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: Static-codecheck
 
     steps:
