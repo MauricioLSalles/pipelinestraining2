@@ -60,10 +60,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: check if reddis exist
-        run: | 
-          docker stop redisService  
-          docker rm  redisService
+      #- name: check if reddis exist
+      #  run: | 
+      #    docker stop redisService  
+      #    docker rm  redisService
+
+      - name: create net
+        run: docker network redis
 
       - name: setup redis
         run: docker run --name redisService -p "6379:6379" -d redis:alpine --network redis
