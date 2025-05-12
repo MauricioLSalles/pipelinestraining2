@@ -47,7 +47,7 @@ jobs:
         run: docker tag restapp:1.0.0 ${BRANCH_NAME}/restapp:1.0.0
 
       - name: push
-        run: docker push ${BRANCH_NAME}/restapp:1.0.0
+        run: docker push ${BRANCH_NAME}/restapp:1.0.0 
 #  ## 🚀 3. 
 #  deploy-dev:
 #    runs-on: ubuntu-latest
