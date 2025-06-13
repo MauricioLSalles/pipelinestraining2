@@ -54,3 +54,5 @@ dist/
 *.db
 *.sqlite3
 .cache/
+
+commands

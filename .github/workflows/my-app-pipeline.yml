@@ -88,5 +88,8 @@ jobs:
       - name: run integration test
         run: docker exec $IMAGE_NAME sh -c "python -m pytest test/integration -v"
 
+      - name: run integration test with newman
+        run:  docker run --rm --network host  -v "./tests:/etc/newman"   postman/newman run collection.json 
+
       - name: cleanup
         run: docker compose down
