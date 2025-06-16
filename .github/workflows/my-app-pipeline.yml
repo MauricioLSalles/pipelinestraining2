@@ -67,10 +67,10 @@ jobs:
         run: docker compose -f 'compose.yaml' up -d $IMAGE_NAME --force-recreate
 
       - name: give permisions
-        run: chmod +x ./tests/collection.json
+        run: chmod +x ./tests
 
       - name: run integration test with newman
-        run:  sudo docker run --rm --network host -v "$(pwd)/tests:/etc/newman" postman/newman run /etc/newman/collection.json sh "chmod +x /etc/newman/collection.json"
+        run:  sudo docker run --rm --network host -v "$(pwd)/tests:/etc/newman" postman/newman run /etc/newman/collection.json sh "chmod +x /etc/newman"
 
       - name: cleanup
         run: docker compose down --rmi all
