@@ -55,6 +55,9 @@ jobs:
     environment:
       name: Develop
       url: http://localhost:5000
+    env:
+      REDIS_PORT: ${{ vars.REDIS_PORT }}
+      RESTAPP_PORT: ${{ vars.RESTAPP_PORT }}
 
     steps:
       - name: Checkout code
