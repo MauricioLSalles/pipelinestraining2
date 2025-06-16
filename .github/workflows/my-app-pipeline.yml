@@ -66,6 +66,9 @@ jobs:
       - name: build compose
         run: docker compose -f 'compose.yaml' up -d $IMAGE_NAME --force-recreate
 
+      - name: give permisions
+        run: chmod +x ./tests/collection.json
+
       - name: run integration test with newman
         run:  docker run --rm --network host -v "$(pwd)/tests:/etc/newman" postman/newman run /etc/newman/collection.json 
 
