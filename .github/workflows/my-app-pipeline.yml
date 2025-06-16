@@ -64,7 +64,7 @@ jobs:
         run: docker compose -f 'compose.yaml' up -d $IMAGE_NAME --force-recreate
 
       - name: run integration test with newman
-        run:  docker run --rm --network host  -v $(pwd)/tests:/etc/newman    postman/newman run /etc/newman/collection.json 
+        run:  docker run --rm --network host -v $(pwd)/tests:/etc/newman postman/newman run /etc/newman/collection.json 
 
       - name: cleanup
         run: docker compose down --rmi all
