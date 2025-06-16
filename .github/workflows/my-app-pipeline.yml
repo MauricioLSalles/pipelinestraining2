@@ -70,7 +70,7 @@ jobs:
         run: chmod +x ./tests/collection.json
 
       - name: run integration test with newman
-        run:  sudo docker run --rm --network host -v "$(pwd)/tests:/etc/newman" postman/newman   sh "chmod +x /etc/newman/collection.json" run /etc/newman/collection.json
+        run:  sudo docker run --rm --network host -v "$(pwd)/tests:/etc/newman" postman/newman run /etc/newman/collection.json sh "chmod +x /etc/newman/collection.json"
 
       - name: cleanup
         run: docker compose down --rmi all
