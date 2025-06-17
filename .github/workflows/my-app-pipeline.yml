@@ -78,11 +78,11 @@ jobs:
       - name: build compose
         run: docker compose -f 'compose.yaml' up -d $IMAGE_NAME --force-recreate
 
-      - name: give permisions
-        run: chmod +x ./tests
-
       - name: run integration test with newman
-        run:  sudo docker run --rm --network host -v "$(pwd)/tests:/etc/newman" postman/newman run /etc/newman/collection.json sh "chmod +x /etc/newman"
+        run:  sudo docker run --rm --network host -v "$(pwd)/test/data:/etc/newman" -w /etc/newman postman/newman run collection.json
+
+      - name: stress testing
+        run: docker run -v "$(pwd)/test/data:/app" -w /app artilleryio/artillery run test.yml
 
       - name: cleanup
         run: docker compose down --rmi all
