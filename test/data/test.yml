@@ -3,7 +3,7 @@ config:
   phases:
     - duration: 5
       arrivalRate: 5
-scenarios:
-  - flow:
-    - get:
-      url: "/"
+scenarios: 
+  - flow: 
+      - get: 
+          url: "/"
