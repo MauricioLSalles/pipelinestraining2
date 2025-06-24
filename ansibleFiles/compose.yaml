@@ -1,0 +1,9 @@
+services:
+  server:
+    image: ubuntu:latest
+    working_dir: /devops
+    tty: true
+    stdin_open: true
+    command: sleep infinity
+    ports:
+      - 2000:22
